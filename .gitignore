@@ -4,5 +4,5 @@
 *wiki_view/*
 .env
 *wiki/*
-dags/__pycache__/*
+*/__pycache__/*
 dags/fpl_offence/__pycache__/*
