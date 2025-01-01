@@ -3,6 +3,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 from airflow.providers.postgres.hooks.postgres import PostgresHook
+from airflow.models import Variable
 
 
 # Database connection
@@ -25,9 +26,9 @@ def get_player_alerts():
 # Function to send email
 def send_email(player_name, alert_type, gameweek, match_time, reason):
     # Email server setup (example with Gmail)
-    sender_email = "adewunmioluwaseyi98@gmail.com"
-    receiver_email = "olaniyiadewunmi30@gmail.com"
-    password = "rujiijdqujtohklr"
+    sender_email = Variable.get('sender_email')
+    receiver_email = Variable.get('receiver_email')
+    password = Variable.get('password')
 
     # Create message
     message = MIMEMultipart()
