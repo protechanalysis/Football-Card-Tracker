@@ -1,26 +1,9 @@
-from airflow.providers.postgres.hooks.postgres import PostgresHook
 from sqlalchemy import text
 
-from dags.fpl_offence.extraction import (fetch_fixtures, fetch_players,
-                                         fetch_position, fetch_teams,
-                                         manu_player)
-
-
-def load_manu_stats():
-
-    player_game_stats = manu_player()
-    # Connect to PostgreSQL using Airflow's PostgresHook
-    postgres_hook = PostgresHook(postgres_conn_id="postgres_id")
-    engine = postgres_hook.get_sqlalchemy_engine()
-
-    # Define table name
-    table_name = "player_stats"
-
-    player_game_stats.to_sql(
-        name=table_name,
-        con=engine,
-        if_exists="replace",
-        index=False)
+from airflow.providers.postgres.hooks.postgres import PostgresHook
+from fpl_offence.extraction import (fetch_fixtures, fetch_players,
+                                    fetch_position, fetch_teams,
+                                    manu_player)
 
 
 def load_fixtures():
@@ -34,6 +17,23 @@ def load_fixtures():
     table_name = "team_fixtures"
 
     fixtures_dd.to_sql(
+        name=table_name,
+        con=engine,
+        if_exists="replace",
+        index=False)
+
+
+def load_manu_stats():
+
+    player_game_stats = manu_player()
+    # Connect to PostgreSQL using Airflow's PostgresHook
+    postgres_hook = PostgresHook(postgres_conn_id="postgres_id")
+    engine = postgres_hook.get_sqlalchemy_engine()
+
+    # Define table name
+    table_name = "player_stats"
+
+    player_game_stats.to_sql(
         name=table_name,
         con=engine,
         if_exists="replace",
