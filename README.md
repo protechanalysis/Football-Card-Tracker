@@ -12,6 +12,7 @@ This project aims to track and manage the accumulation of yellow and red cards b
 - Deploy the solution in a containerized environment with Docker.
 
 ### Data Architecture
+
 ![workflow](/asset/epl_architecture.png)
 
 ### Data Workflow
