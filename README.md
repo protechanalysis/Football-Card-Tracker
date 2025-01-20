@@ -17,26 +17,26 @@ This project aims to track and manage the accumulation of yellow and red cards b
 ### Data Workflow
 #### Data Sources
 - API: FPL API endpoint providing data for players, fixtures, players match stats, teams.
-- ETL/ELT Process
-    - Extraction:
-        Use Python’s requests library to fetch data from the FPL API.
-    - Transformation:
-        Clean and normalize the data to align with the PostgreSQL schema.
-    - Loading:
-        Insert transformed data into PostgreSQL.
-- Airflow Orchestration
+#### ETL/ELT Process
+- Extraction:
+    Use Python’s requests library to fetch data from the FPL API.
+- Transformation:
+    Clean and normalize the data to align with the PostgreSQL schema.
+- Loading:
+    Insert transformed data into PostgreSQL.
+#### Airflow Orchestration Dag
 ![dag](/asset/dag_flow_tracker.png)
 
-- Notification Features
-    - Warning Alert:
-        Triggered when a player accumulates 4 yellow cards.
-    - Suspension Alert:
-        Triggered when a player accumulates 5 yellow cards or when player receives a red card in the most recent match.
-    - Reset Notification:
-        Triggered after the player has served the suspension by missing a match.
+#### Notification Features
+- Warning Alert:
+    Triggered when a player accumulates 4 yellow cards.
+- Suspension Alert:
+    Triggered when a player accumulates 5 yellow cards or when player receives a red card in the most recent match.
+- Reset Notification:
+    Triggered after the player has served the suspension by missing a match.
 ![notify1](/asset/offence_notification.png)
 ![notify2](/asset/offence_notification2.png)
 
-### visualization
+#### Visualization
 ![viz](/asset/tracker_viz.png)
 ![viz2](/asset/tracker_viz2.png)
