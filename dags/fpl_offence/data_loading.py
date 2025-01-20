@@ -1,7 +1,7 @@
 from airflow.providers.postgres.hooks.postgres import PostgresHook
+
 from fpl_offence.extraction import (fetch_fixtures, fetch_players,
-                                    fetch_position, fetch_teams,
-                                    manu_player)
+                                    fetch_position, fetch_teams, manu_player)
 
 
 def load_fixtures():

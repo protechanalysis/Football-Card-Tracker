@@ -2,8 +2,8 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-from airflow.providers.postgres.hooks.postgres import PostgresHook
 from airflow.models import Variable
+from airflow.providers.postgres.hooks.postgres import PostgresHook
 
 
 # Database connection
