@@ -17,7 +17,7 @@ This project aims to track and manage the accumulation of yellow and red cards b
 ### Data Workflow
 #### Data Sources
 - API: FPL API endpoint providing data for players, fixtures, players match stats, teams.
-#### ETL/ELT Process
+#### ETL Process
 - Extraction:
     Use Python’s requests library to fetch data from the FPL API.
 - Transformation:
