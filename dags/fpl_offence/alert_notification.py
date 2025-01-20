@@ -8,35 +8,42 @@ from airflow.models import Variable
 
 # Database connection
 def get_player_alerts():
-    # Initialize PostgresHook
-    hook = PostgresHook(postgres_conn_id='postgres_id')
+    """
+    Retrieve all player alerts from the "alert" table in PostgreSQL.
 
-    # Define your query
+    Returns:
+        list: A list of records from the "alert" table.
+    """
+    hook = PostgresHook(postgres_conn_id='postgres_id')
     query = """
         select *
         from alert
     """
-
-    # Execute the query and fetch results
     results = hook.get_records(query)
-
     return results
 
 
-# Function to send email
 def send_email(player_name, alert_type, gameweek, match_time, reason):
-    # Email server setup (example with Gmail)
+    """
+    Send an email alert regarding a player.
+
+    Args:
+        player_name (str): The name of the player.
+        alert_type (str): The type of alert (warning or suspension).
+        gameweek (int): The gameweek associated with the alert.
+        match_time (str): The scheduled match time.
+        reason (str): The reason for the alert.
+
+    Sends an email using SMTP with Gmail server settings.
+    """
     sender_email = Variable.get('sender_email')
     receiver_email = Variable.get('receiver_email')
     password = Variable.get('password')
-
-    # Create message
     message = MIMEMultipart()
     message["From"] = sender_email
     message["To"] = receiver_email
     message["Subject"] = f"Player Alert: {player_name} - {alert_type}"
 
-    # Email body
     body = f"""
     Dear Team Manager,
 
@@ -52,8 +59,6 @@ def send_email(player_name, alert_type, gameweek, match_time, reason):
     Your Team
     """
     message.attach(MIMEText(body, "plain"))
-
-    # Send email
     try:
         server = smtplib.SMTP("smtp.gmail.com", 587)
         server.starttls()
@@ -67,20 +72,20 @@ def send_email(player_name, alert_type, gameweek, match_time, reason):
         server.quit()
 
 
-# Main function to process the players and send alerts
 def process_and_notify():
+    """
+    Process player alerts and send notifications via email.
+
+    Retrieves player alerts from the database, extracts relevant details,
+    and sends an email for each alert.
+    """
     players = get_player_alerts()
 
     for player in players:
-        player_name = f"{player[1]} {player[2]}"  # First and Last Name
-        alert_type = player[5]  # 'warning' or 'miss_next_match'
-        gameweek = player[3]  # Gameweek
-        match_time = player[4]  # Match date/time
+        player_name = f"{player[1]} {player[2]}"
+        alert_type = player[5]
+        gameweek = player[3]
+        match_time = player[4]
         reason = player[6]
 
-        # Send the email
         send_email(player_name, alert_type, gameweek, match_time, reason)
-
-
-# Run the notification system
-# process_and_notify()

@@ -14,13 +14,10 @@ def fetch_data():
     try:
         logging.info("Fetching data from Fantasy Premier League API...")
         response = requests.get(url)
-        # Raise an HTTPError for bad responses
-        response.raise_for_status()
         res = response.json()
+        return res
     except Exception as e:
         logging.error(f"An unexpected error occurred: {e}")
-
-    return res
 
 
 def fetch_teams():
@@ -34,14 +31,10 @@ def fetch_teams():
         r_team = data['teams']
         data = pd.json_normalize(r_team)
         team = data[['id', 'name', 'short_name']]
-        team.to_csv('epl_team.csv', index=False)
+        team.to_csv('dags/fpl_offence/data/epl_team.csv', index=False)
+        return team
     except Exception as e:
         logging.error(f"An unexpected error occurred: {e}")
-
-    return team
-
-
-# fetch_teams()
 
 
 def fetch_players():
@@ -59,14 +52,9 @@ def fetch_players():
         player.rename(columns={'element_type': 'position_id',
                                'team': 'team_id'}, inplace=True)
         filter_player = player[player['team_id'] == 14]
-        filter_player.to_csv('manu_players.csv', index=False)
+        return filter_player
     except Exception as e:
         logging.error(f"An unexpected error occurred: {e}")
-
-    return filter_player
-
-
-# fetch_players()
 
 
 def fetch_position():
@@ -81,14 +69,9 @@ def fetch_position():
         position_data = data[['id', 'singular_name']].copy()
         position_data.rename(columns={'singular_name': 'position'},
                              inplace=True)
-        position_data.to_csv('players_position.csv', index=False)
+        return position_data
     except Exception as e:
         logging.error(f"An error occurred in fetch_position: {e}")
-
-    return position_data
-
-
-# fetch_position()
 
 
 def fetch_fixtures():
@@ -114,13 +97,9 @@ def fetch_fixtures():
                  'team_a', 'team_a_score', 'team_h', 'team_h_score', 'season']]
         filter_manu = res[(res['team_a'] == 14) | (res['team_h'] == 14)]
         logging.info("Fetching fixtures data successful")
-        # filter_manu.to_csv('fixtures_manu.csv', index=False)
+        return filter_manu
     except Exception as e:
         logging.error(f"An unexpected error occurred: {e}")
-    return filter_manu
-
-
-# fetch_fixtures()
 
 
 def fetch_game_week():
@@ -134,10 +113,9 @@ def fetch_game_week():
         # .astype(int)
 
         all_game_week = game_week.unique().tolist()
+        return all_game_week
     except Exception as e:
         logging.error(f"An unexpected error occurred in fetch_game_week: {e}")
-
-    return all_game_week
 
 
 def fetch_player_stats():
@@ -171,16 +149,10 @@ def fetch_player_stats():
                         "red_cards": red_cards,
                         "gameweek": int(i)
                     })
-            except requests.RequestException as e:
-                print(f"Error fetching data for gameweek {i}: {e}")
-            except ValueError as e:
-                print(f"Error parsing JSON for gameweek {i}: {e}")
+            except Exception as e:
+                logging(f"Error fetching data for gameweek {i}: {e}")
     extracted_data = pd.DataFrame(extracted_data)
-    extracted_data.to_csv('full_epl_player_stats.csv', index=False)
     return extracted_data
-
-
-fetch_player_stats()
 
 
 def manu_player():
@@ -195,11 +167,6 @@ def manu_player():
         manu_players = spec_player.unique().tolist()
 
         all_stats = players[players['id'].isin(manu_players)]
-        all_stats.to_csv('manu_player_stat.csv', index=False)
+        return all_stats
     except Exception as e:
         logging.error(f"An unexpected error occurred in manu_player: {e}")
-
-    return all_stats
-
-
-# manu_player()

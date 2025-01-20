@@ -2,10 +2,11 @@ from datetime import datetime, timedelta
 
 from airflow import DAG
 from airflow.operators.python import PythonOperator
+from airflow.operators.dummy import DummyOperator
+from airflow.providers.common.sql.operators.sql import SQLExecuteQueryOperator
 
 from fpl_offence.alert_notification import process_and_notify
 from fpl_offence.data_loading import (load_fixtures, load_manu_stats,
-                                      load_offence_into_table,
                                       load_players, load_position,
                                       load_teams)
 from fpl_offence.extraction import (fetch_data, fetch_fixtures,
@@ -15,6 +16,7 @@ from fpl_offence.extraction import (fetch_data, fetch_fixtures,
 
 default_args = {'owner': 'adewunmi',
                 'depends_on_past': False,
+                'conn_id': "postgres_id",
                 'retries': 2,
                 'retry_delay': timedelta(minutes=5)
                 }
@@ -22,7 +24,7 @@ default_args = {'owner': 'adewunmi',
 
 with DAG(
     dag_id="epl_fixtures",
-    start_date=datetime(2024, 12, 17),
+    start_date=datetime(2025, 1, 19),
     default_args=default_args,
     schedule_interval=None
 ) as dag:
@@ -92,9 +94,9 @@ with DAG(
         python_callable=load_players
     )
 
-    offence = PythonOperator(
-        task_id="alerts",
-        python_callable=load_offence_into_table
+    truncate_table = SQLExecuteQueryOperator(
+        task_id="offence_table_truncate",
+        sql="sql/truncate.sql"
     )
 
     notify = PythonOperator(
@@ -102,11 +104,28 @@ with DAG(
         python_callable=process_and_notify
     )
 
+    offence = SQLExecuteQueryOperator(
+        task_id="offences_load",
+        sql="sql/offence.sql"
+    )
 
-get_teams_data >> [get_teams, get_players, get_position] >> get_fixtures
-get_fixtures >> get_event_week >> get_epl_players_stats >> manu_players_stats
-get_players >> load_team_players
-get_fixtures >> load_team_fixtures
-manu_players_stats >> load_player_stat >> offence >> notify
-get_position >> load_position_player
-get_teams >> load_team_epl
+    create_table = SQLExecuteQueryOperator(
+        task_id="creat_table",
+        sql="sql/create_table.sql"
+
+    )
+
+    dummy = dummy_task = DummyOperator(
+        task_id="dummy_task"
+    )
+
+get_teams_data >> [get_fixtures, get_teams, get_position,
+                   get_epl_players_stats, get_players]
+get_fixtures >> get_event_week
+get_epl_players_stats >> manu_players_stats
+[get_fixtures, get_teams, get_position, get_epl_players_stats,
+ get_players] >> dummy
+dummy >> create_table >> [load_team_epl, load_position_player,
+                          load_team_fixtures, load_player_stat,
+                          load_team_players, truncate_table]
+truncate_table >> offence >> notify
