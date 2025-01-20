@@ -1,0 +1,25 @@
+name: tracker_flow
+
+on: [push]
+      
+jobs:
+  lint:
+    name: checkout
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - uses: actions/setup-python@v2
+        with:
+          python-version: "3.9.0"
+
+      - name: install dependencies
+        run: pip install -r requirements-dev.txt
+
+      - name: Running isort.
+        run: isort --check-only .
+
+      - name: Running flake8
+        run: flake8 .
