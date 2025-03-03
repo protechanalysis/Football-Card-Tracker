@@ -4,6 +4,7 @@ from airflow import DAG
 from airflow.operators.dummy import DummyOperator
 from airflow.operators.python import PythonOperator
 from airflow.providers.common.sql.operators.sql import SQLExecuteQueryOperator
+
 from fpl_offence.alert_notification import process_and_notify
 from fpl_offence.data_loading import (load_fixtures, load_manu_stats,
                                       load_players, load_position, load_teams)
