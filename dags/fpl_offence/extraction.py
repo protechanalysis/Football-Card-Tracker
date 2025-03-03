@@ -1,6 +1,6 @@
+import json
 import logging
 
-import json
 import pandas as pd
 import requests
 

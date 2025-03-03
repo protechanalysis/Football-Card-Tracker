@@ -10,7 +10,8 @@ from fpl_offence.data_loading import (load_fixtures, load_manu_stats,
 from fpl_offence.extraction import (download_fixtures, fetch_data,
                                     fetch_fixtures, fetch_game_week,
                                     fetch_player_stats, fetch_players,
-                                    fetch_position, fetch_teams, manu_player,)
+                                    fetch_position, fetch_teams,
+                                    manu_player,)
 
 default_args = {'owner': 'adewunmi',
                 'depends_on_past': False,
