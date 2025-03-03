@@ -7,10 +7,10 @@ from airflow.providers.common.sql.operators.sql import SQLExecuteQueryOperator
 from fpl_offence.alert_notification import process_and_notify
 from fpl_offence.data_loading import (load_fixtures, load_manu_stats,
                                       load_players, load_position, load_teams)
-from fpl_offence.extraction import (fetch_data, fetch_fixtures,
-                                    fetch_game_week, fetch_player_stats,
-                                    fetch_players, fetch_position, fetch_teams,
-                                    manu_player, download_fixtures)
+from fpl_offence.extraction import (download_fixtures, fetch_data,
+                                    fetch_fixtures, fetch_game_week,
+                                    fetch_player_stats, fetch_players,
+                                    fetch_position, fetch_teams, manu_player,)
 
 default_args = {'owner': 'adewunmi',
                 'depends_on_past': False,
