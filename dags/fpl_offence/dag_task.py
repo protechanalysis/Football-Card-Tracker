@@ -10,7 +10,7 @@ from fpl_offence.data_loading import (load_fixtures, load_manu_stats,
 from fpl_offence.extraction import (fetch_data, fetch_fixtures,
                                     fetch_game_week, fetch_player_stats,
                                     fetch_players, fetch_position, fetch_teams,
-                                    manu_player)
+                                    manu_player, download_fixtures)
 
 default_args = {'owner': 'adewunmi',
                 'depends_on_past': False,
@@ -45,6 +45,11 @@ with DAG(
     get_position = PythonOperator(
         task_id="player_position",
         python_callable=fetch_position
+    )
+
+    fixtures_download = PythonOperator(
+        task_id="fixtures_api",
+        python_callable=download_fixtures
     )
 
     get_fixtures = PythonOperator(
@@ -117,11 +122,11 @@ with DAG(
         task_id="dummy_task"
     )
 
-get_teams_data >> [get_fixtures, get_teams, get_position,
+get_teams_data >> [get_teams, get_position,
                    get_epl_players_stats, get_players]
-get_fixtures >> get_event_week
+fixtures_download >> get_fixtures >> get_event_week
 get_epl_players_stats >> manu_players_stats
-[get_fixtures, get_teams, get_position, get_epl_players_stats,
+[get_event_week, get_teams, get_position, get_epl_players_stats,
  get_players] >> dummy
 dummy >> create_table >> [load_team_epl, load_position_player,
                           load_team_fixtures, load_player_stat,
