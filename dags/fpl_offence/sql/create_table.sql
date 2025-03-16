@@ -3,11 +3,12 @@ CREATE TABLE IF NOT EXISTS player_stats (
     minutes int,
     yellow_cards int,
     red_cards int,
-    gameweek int
+    gameweek int,
+    primary key (id, gameweek)
 );
 
 CREATE TABLE IF NOT EXISTS team_fixtures (
-    code int,
+    code int primary key,
     event int,
     finished int,
     id int,
@@ -20,18 +21,18 @@ CREATE TABLE IF NOT EXISTS team_fixtures (
 );
 
 CREATE TABLE IF NOT EXISTS position (
-    id int,
+    id int primary key,
     position varchar
 );
 
 CREATE TABLE IF NOT EXISTS teams (
-    id int,
+    id int primary key,
     name varchar,
     short_name varchar
 );
 
 CREATE TABLE IF NOT EXISTS players (
-    id int,
+    id int primary key,
     first_name varchar,
     second_name varchar,
     team_id int,
@@ -39,7 +40,7 @@ CREATE TABLE IF NOT EXISTS players (
 );
 
 CREATE TABLE IF NOT EXISTS alert (
-    id int,
+    id int primary key,
     first_name varchar,
     second_name varchar,
     gameweek int,

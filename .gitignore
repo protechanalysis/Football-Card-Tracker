@@ -9,3 +9,5 @@ dags/fpl_offence/__pycache__/*
 dags/fpl_offence/sql/__pycache__/*
 dags/wiki/*
 *reddit/*
+*optimise/*
+*.pytest_cache/*

@@ -76,7 +76,7 @@ filtered_alerts AS (
 max_gameweek AS (
     SELECT MAX(event) AS max_gameweek
     FROM team_fixtures
-    where finished = true
+    where finished = 1
 ),
 valid_alerts AS (
     SELECT 

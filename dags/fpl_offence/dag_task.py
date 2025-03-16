@@ -78,7 +78,7 @@ with DAG(
     )
 
     load_position_player = PythonOperator(
-        task_id="load_to_database",
+        task_id="loading_position",
         python_callable=load_position
     )
 

@@ -19,8 +19,6 @@ def fetch_data():
     try:
         logging.info("Fetching data from Fantasy Premier League API...")
         response = requests.get(url_bootstrap, stream=True)
-        # res = response.json()
-        # return res
         with open(bootstrap_output_file, "w") as f:
             data_list = []  # List to store JSON objects
 
@@ -224,7 +222,8 @@ def manu_player():
         manu_players = spec_player.unique().tolist()
         # filtering for only Manchester United players
         all_stats = players[players['id'].isin(manu_players)]
-        all_stats.to_csv('dags/fpl_offence/data/manunited_players_stats.csv')
+        all_stats.to_csv('dags/fpl_offence/data/manunited_players_stats.csv',
+                         index=False)
         logging.info("selecting Manchester United players' stats...successful")
         return all_stats
     except Exception as e:
